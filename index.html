@@ -12,11 +12,67 @@
   <script type="text/javascript" src="js/js-transformer.js"></script>
 </head>
 <body>
-  <div id="mainApp" class="container"></div>
+  <div id="mainApp" className="">
+  </div>
 
   <script type="text/jsx">
-    var GithubProfile = React.createClass({
+    var githubUser;
+    // Navbar component
+    var BootstrapNavbar = React.createClass({
       getDefaultProps: function () {
+        return {
+          color: 'light'
+        }
+      },
+      render: function () {
+        var navBar = (this.props.color == 'dark') ? 'navbar navbar-inverse' : 'navbar navbar-default';
+        var homeActive = aboutActive = '';
+        return (
+          <nav className={navBar}>
+            <div className="container-fluid">
+              
+              <div className="navbar-header">
+                <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                  <span className="sr-only">Toggle navigation</span>
+                  <span className="icon-bar"></span>
+                  <span className="icon-bar"></span>
+                  <span className="icon-bar"></span>
+                </button>
+                <a className="navbar-brand" href="#">{this.props.brandName}</a>
+              </div>
+            </div>
+          </nav>
+        )
+      }
+    });
+    
+    var GithubProfileDiv = React.createClass({
+      render: function () {
+        return(
+          <div className="container section-wrapper">
+            <div className="row">
+              <div className="col-md-4 col-md-offset-4">
+                <div className="thumbnail">
+                  <a href={this.props.userRepo} title={this.props.userName}>
+                    <img src={this.props.userImage} alt={this.props.userName} />
+                  </a>
+                  <div className="caption">
+                    <h3>{this.props.userName}</h3>
+                    <p>{this.props.userBio}</p>
+                    <a role="button" href={this.props.userEmail}>{this.props.userEmail}</a>
+                    <p>Followers: {this.props.userFollowers}</p>
+                    <p>Following: {this.props.userFollowing}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      }
+    });
+
+    var GithubProfile = React.createClass({
+      getInitialState: function () {
         return {
           // this.setState({
             userName        : 'angvishvish',
@@ -27,7 +83,7 @@
         }
       },
       getUserDetails: function () {
-        var githubUrl = 'http://api.github.com/users/' + this.props.userName + '?client_id=' + this.props.clientId + '&client_secret=' + this.props.clientSecretId;
+        var githubUrl = 'http://api.github.com/users/' + this.state.userName + '?client_id=' + this.state.clientId + '&client_secret=' + this.state.clientSecretId;
         
         var thisProps = this.props;
         $.ajax({
@@ -35,9 +91,12 @@
             cache     : false,
             dataType  : 'json',
             success   : function (data) {
-              thisProps.userData = data;
-              console.log(thisProps.userData, data)
-            }
+              this.setState({userData: data});
+              console.log('sdafsdfsd', this.state)
+            }.bind(this)
+            , error: function (error) {
+              console.log(error)
+            }.bind(this)
           });
       },
       componentDidMount: function () {
@@ -45,9 +104,19 @@
       },
       render: function () {
         return(
-          <div>
-            <h2>{this.props.userName}</h2>
-          </div>
+          <main className="main-wrapper">
+            <BootstrapNavbar
+                brandName={this.state.userName}
+                color="dark"/>
+            <GithubProfileDiv
+              userName={this.state.userData.name}
+              userImage={this.state.userData.avatar_url}
+              userBlog={this.state.userData.blog}
+              userEmail={this.state.userData.email}
+              userFollowers={this.state.userData.followers}
+              userFollowing={this.state.userData.following}
+              userRepo={this.state.userData.repos_url} />
+          </main>
         )
       }
     });
