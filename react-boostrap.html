@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/style.css">
+  <title>React bootstrap components</title>
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/bootstrap.js"></script>
+  <script type="text/javascript" src="js/underscore.js"></script>
+  <script type="text/javascript" src="js/react.js"></script>
+  <script type="text/javascript" src="js/js-transformer.js"></script>
+</head>
+<body>
+  <div id="mainApp" class="container"></div>
+
+  <script type="text/jsx">
+    // Navbar component
+    var BootstrapNavbar = React.createClass({
+      getDefaultProps: function () {
+        return {
+          brand: 'My website',
+          color: 'light'
+        }
+      },
+      render: function () {
+        var navBar = (this.props.color == 'dark') ? 'navbar navbar-inverse' : 'navbar navbar-default';
+        var homeActive = aboutActive = '';
+
+        if (this.props.page == 'home') {
+          homeActive = 'active';
+        } else if (this.props.page == 'about') {
+          aboutActive = 'active';
+        }
+        return (
+          <nav className={navBar}>
+            <div className="container-fluid">
+              
+              <div className="navbar-header">
+                <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                  <span className="sr-only">Toggle navigation</span>
+                  <span className="icon-bar"></span>
+                  <span className="icon-bar"></span>
+                  <span className="icon-bar"></span>
+                </button>
+                <a className="navbar-brand" href="#">{this.props.brand}</a>
+              </div>
+
+              <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul className="nav navbar-nav">
+                  <li className={homeActive}>
+                    <a onClick={this.props.homeClick} href="#">Home</a>
+                  </li>
+                  <li className={aboutActive}>
+                    <a onClick={this.props.aboutClick} href="#">About</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+        )
+      }
+    });
+    
+    var PageHome = React.createClass({
+      getDefaultProps: function () {
+        return {
+          headerText  : 'Hello, world!',
+          paraText    : 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto consequatur rerum eius numquam id sapiente voluptatem voluptates, aspernatur cumque dicta!',
+          linkText    : 'Google',
+          linkUrl     : 'http://www.google.com' 
+        }
+      },
+      render: function () {
+        return (
+          <div className="jumbotron">
+            <h1>{this.props.headerText}</h1>
+            <p>{this.props.paraText}</p>
+            <p>
+              <a className="btn btn-link btn-lg" href={this.props.linkUrl} role="button">{this.props.linkText}</a>
+            </p>
+          </div>
+        )
+      }
+    });
+
+    var PageAbout = React.createClass({
+      getDefaultProps: function () {
+        return {
+          headerText  : 'About us',
+          paraText    : 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto consequatur rerum eius numquam id sapiente voluptatem voluptates, aspernatur cumque dicta!'
+        }
+      },
+      render: function () {
+        return (
+          <div className="page-header">
+            <h1>{this.props.headerText}</h1>
+            <p>{this.props.paraText}</p>
+          </div>
+        )
+      }
+    });
+
+    var MainApplication = React.createClass({
+      getInitialState: function () {
+        return {
+          page: 'home'
+        }
+      },
+      homeHandeler: function () {
+        this.setState({
+          page: 'home'
+        })
+      },
+      aboutHandeler: function () {
+        this.setState({
+          page: 'about'
+        })
+      },
+      render: function () {
+        if (this.state.page == 'home') {
+          var currentPage = <PageHome />;
+        } else if (this.state.page == 'about') {
+          var currentPage = <PageAbout />;
+        }
+        return (
+          <main className="main-wrapper">
+            <BootstrapNavbar
+              color="dark"
+              page={this.state.page}
+              homeClick={this.homeHandeler}
+              aboutClick={this.aboutHandeler}/>
+            {currentPage}
+          </main>
+        )
+      }
+    });
+
+    React.render(<MainApplication/>, document.getElementById('mainApp'));
+  </script>
+</body>
+</html>
