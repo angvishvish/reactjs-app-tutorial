@@ -54,7 +54,7 @@
               <div className="col-md-4 col-md-offset-4">
                 <div className="thumbnail">
                   <a href={this.props.userRepo} title={this.props.userName}>
-                    <img src={this.props.userImage} alt={this.props.userName} />
+                    <img src="image/user-img.png" alt={this.props.userName} />
                   </a>
                   <div className="caption">
                     <h3>{this.props.userName}</h3>
@@ -85,9 +85,9 @@
       getUserDetails: function () {
         var githubUrl = 'http://api.github.com/users/' + this.state.userName + '?client_id=' + this.state.clientId + '&client_secret=' + this.state.clientSecretId;
         
-        var thisProps = this.props;
         $.ajax({
-            url       : githubUrl,
+            url       : 'js/github-user-api.json',
+            type      : 'GET',
             cache     : false,
             dataType  : 'json',
             success   : function (data) {
